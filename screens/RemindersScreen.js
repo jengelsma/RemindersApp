@@ -4,7 +4,11 @@ import { Feather } from '@expo/vector-icons';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { CheckBox } from 'react-native-elements';
 import Toast from 'react-native-root-toast';
-import { initRemindersDB, writeData, setupDataListener } from '../helpers/fb-reminders';
+import {
+  initRemindersDB,
+  storeReminderItem,
+  setupReminderListener,
+} from '../helpers/fb-reminders';
 
 const items = [
   { text: 'get groceries', done: false },
@@ -18,12 +22,12 @@ const comparator = (item1, item2) => {
 
 const RemindersScreen = ({ route, navigation }) => {
 
-  const [reminders, setReminders] = useState(items.sort(comparator));
+  const [reminders, setReminders] = useState([]);
   const [display, setDisplay] = useState('All');
 
   useEffect(() => {
     if (route.params?.text) {
-      setReminders([...reminders, route.params].sort(comparator));
+      storeReminderItem(route.params);
     }
   }, [route.params?.text]);
 
@@ -33,7 +37,9 @@ const RemindersScreen = ({ route, navigation }) => {
     } catch (err) {
       console.log(err);
     }
-    setupDataListener('score');
+    setupReminderListener((items) => {
+      setReminders(items.sort(comparator));
+    });
   }, []);
 
 
@@ -58,7 +64,6 @@ const RemindersScreen = ({ route, navigation }) => {
           } else {
             setDisplay('All');
           }
-          writeData('score', { display });
         }}
       >
         <Text>{display}</Text>
@@ -122,7 +127,7 @@ const RemindersScreen = ({ route, navigation }) => {
   
   return (
     <FlatList
-      keyExtractor={(item) => item.text}
+      keyExtractor={(item) => item.id}
       data={reminders.filter(displayFilter)}
       renderItem={renderReminder}
     />
