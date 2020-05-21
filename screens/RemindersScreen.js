@@ -4,6 +4,7 @@ import { Feather } from '@expo/vector-icons';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { CheckBox } from 'react-native-elements';
 import Toast from 'react-native-root-toast';
+import { initRemindersDB, writeData, setupDataListener } from '../helpers/fb-reminders';
 
 const items = [
   { text: 'get groceries', done: false },
@@ -26,6 +27,14 @@ const RemindersScreen = ({ route, navigation }) => {
     }
   }, [route.params?.text]);
 
+  useEffect(() => {
+    try {
+      initRemindersDB();
+    } catch (err) {
+      console.log(err);
+    }
+    setupDataListener('score');
+  }, []);
 
 
   const displayFilter = (item) => {
@@ -49,6 +58,7 @@ const RemindersScreen = ({ route, navigation }) => {
           } else {
             setDisplay('All');
           }
+          writeData('score', { display });
         }}
       >
         <Text>{display}</Text>
