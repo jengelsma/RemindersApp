@@ -14,7 +14,7 @@ const AddReminderScreen = ({ route, navigation }) => {
           navigation.navigate('Reminders', {text: reminder, done: false});
         }}
       >
-        <Text>Save</Text>
+        <Text style={styles.buttonStyle}>Save</Text>
       </TouchableOpacity>
     ),
     headerRight: () => (
@@ -23,7 +23,7 @@ const AddReminderScreen = ({ route, navigation }) => {
           navigation.navigate('Reminders');
         }}
       >
-        <Text>Cancel</Text>
+        <Text style={styles.buttonStyle}>Cancel</Text>
       </TouchableOpacity>
     ),
   });
@@ -39,6 +39,8 @@ const AddReminderScreen = ({ route, navigation }) => {
   );
 };
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  buttonStyle: { margin: 10, color: 'blue' },
+});
 
 export default AddReminderScreen;
