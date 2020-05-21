@@ -11,9 +11,14 @@ const items = [
   { text: 'take out trash', done: false },
 ];
 
+const comparator = (item1, item2) => {
+  return item1.text.toLowerCase() > item2.text.toLowerCase();
+};
+
 const RemindersScreen = ({ route, navigation }) => {
 
   const [reminders, setReminders] = useState(items.sort(comparator));
+  const [display, setDisplay] = useState('All');
 
   useEffect(() => {
     if (route.params?.text) {
@@ -21,21 +26,61 @@ const RemindersScreen = ({ route, navigation }) => {
     }
   }, [route.params?.text]);
 
-  const comparator = (item1, item2) => {
-    return item1.text.toLowerCase() > item2.text.toLowerCase();
-  };
+
+
+  const displayFilter = (item) => {
+    if(display==='All') {
+      return true;
+    } else if (display === 'Done') {
+      return item.done ? true : false;
+    } else {
+      return item.done ? false : true;
+    }
+  }
 
   navigation.setOptions({
+    headerLeft: () => (
+      <TouchableOpacity
+        onPress={() => {
+          if(display==='All') {
+            setDisplay('Not Done') 
+          } else if (display === 'Not Done' ) {
+            setDisplay('Done');
+          } else {
+            setDisplay('All');
+          }
+        }}
+      >
+        <Text>{display}</Text>
+      </TouchableOpacity>
+    ),
     headerRight: () => (
       <TouchableOpacity
         onPress={() => {
           navigation.navigate('AddReminder');
         }}
-        >
-          <Feather style={{marginRight: 10 }} name="edit" size={24} />
-        </TouchableOpacity>
+      >
+        <Feather style={{ marginRight: 10 }} name="edit" size={24} />
+      </TouchableOpacity>
     ),
   });
+
+  const addRemindersNotDisplayed = (newArr) => {
+    if (display === 'Not Done') {
+      newArr = newArr.concat(
+        reminders.filter((i) => {
+          return i.done;
+        })
+      );
+    } else if (display === 'Done') {
+      newArr = newArr.concat(
+        reminders.filter((i) => {
+          return !i.done;
+        })
+      );
+    }
+    return newArr;
+  };
 
   const renderReminder = ({ index, item }) => {
     return (
@@ -43,14 +88,17 @@ const RemindersScreen = ({ route, navigation }) => {
         title={item.text}
         checked={item.done}
         onPress={() => {
-          let newArr = [...reminders];
-          newArr[index] = { ...item, done: !item.done};
+          var newArr = [...reminders.filter(displayFilter)];
+          newArr[index] = { text: item.text, done: !item.done };
+          newArr = addRemindersNotDisplayed(newArr);
           setReminders(newArr.sort(comparator));
         }}
         onLongPress={() => {
-          let newArr = reminders.filter((val,idx) => {
+          let subset = reminders.filter(displayFilter);
+          let newArr = subset.filter((val, idx) => {
             return idx == index ? false : true;
           });
+          newArr = addRemindersNotDisplayed(newArr);
           setReminders(newArr.sort(comparator));
           Toast.show(`Deleted ${item.text}`, {
             duration: Toast.durations.SHORT,
@@ -65,7 +113,7 @@ const RemindersScreen = ({ route, navigation }) => {
   return (
     <FlatList
       keyExtractor={(item) => item.text}
-      data={reminders}
+      data={reminders.filter(displayFilter)}
       renderItem={renderReminder}
     />
   );
