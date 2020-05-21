@@ -13,7 +13,17 @@ const items = [
 
 const RemindersScreen = ({ route, navigation }) => {
 
-  const [reminders, setReminder] = useState(items);
+  const [reminders, setReminders] = useState(items.sort(comparator));
+
+  useEffect(() => {
+    if (route.params?.text) {
+      setReminders([...reminders, route.params].sort(comparator));
+    }
+  }, [route.params?.text]);
+
+  const comparator = (item1, item2) => {
+    return item1.text.toLowerCase() > item2.text.toLowerCase();
+  };
 
   navigation.setOptions({
     headerRight: () => (
@@ -35,13 +45,13 @@ const RemindersScreen = ({ route, navigation }) => {
         onPress={() => {
           let newArr = [...reminders];
           newArr[index] = { ...item, done: !item.done};
-          setReminder(newArr);
+          setReminders(newArr.sort(comparator));
         }}
         onLongPress={() => {
           let newArr = reminders.filter((val,idx) => {
             return idx == index ? false : true;
           });
-          setReminder(newArr);
+          setReminders(newArr.sort(comparator));
           Toast.show(`Deleted ${item.text}`, {
             duration: Toast.durations.SHORT,
             animation: true, 

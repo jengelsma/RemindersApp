@@ -1,13 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { Text, View, StyleSheet, FlatList } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
+import { Input } from 'react-native-elements';
 
 const AddReminderScreen = ({ route, navigation }) => {
+
+  const [reminder, setReminder] = useState('');
+
   navigation.setOptions({
     headerLeft: () => (
       <TouchableOpacity
         onPress={() => {
-          navigation.navigate('Reminders');
+          navigation.navigate('Reminders', {text: reminder, done: false});
         }}
       >
         <Text>Save</Text>
@@ -26,7 +30,11 @@ const AddReminderScreen = ({ route, navigation }) => {
 
   return (
     <View>
-      <Text> Add Reminder Screen </Text>
+      <Input
+        placeholder='Enter reminder'
+        value={reminder}
+        onChangeText={setReminder}
+      />
     </View>
   );
 };
