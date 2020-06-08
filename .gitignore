@@ -1,4 +1,6 @@
 fb-credentials.js
+google-services.json
+GoogleService-Info.plist
 node_modules/**/*
 .expo/*
 npm-debug.*

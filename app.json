@@ -22,7 +22,29 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "edu.gvsu.reminders",
+      "buildNumber": "1.0.0",
+      "googleServicesFile": "./GoogleService-Info.plist"
+    },
+    "android": {
+      "package": "edu.gvsu.reminders",
+      "versionCode": 1,
+      "googleServicesFile": "./google-services.json"
+    },
+    "web": {
+      "config": {
+        "firebase": {
+          "apiKey": "your-data-goes-here",
+          "authDomain": "your-data-goes-here",
+          "databaseURL": "https: //your-data-goes-here",
+          "projectId": "your-data-goes-here",
+          "storageBucket": "your-data-goes-here",
+          "messagingSenderId": "your-data-goes-here",
+          "appId": "1: your-data-goes-here",
+          "measurementId": "your-data-goes-here"
+        }
+      }
     }
   }
 }
